@@ -7,14 +7,14 @@ from scipy.integrate import ode
 from scipy.integrate import odeint
 
 
+#   Function used for finding t50 values
 def find_nearest(array, value):
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()
     return array[idx]
 
-
+#   Function used for calculating propensities
 def Prop(s, k):
-    
     prop = [s[0]*(s[0]-1)/2*k[0],
             2*s[0]*s[1]*k[1],
             s[0]*(s[0]-1)*s[2]/2*k[2],
@@ -26,13 +26,21 @@ def Prop(s, k):
            ]
     return prop
 
-simulations = 1000
-R = 10
-Kp = 10
-cS = 5E-4
-S = (R+1)*cS/(Kp+R)
-P = 0
-M = 0
+simulations = 1000 #    Number of simulations
+
+
+#   Parameters
+R = 10 #    Volume fraction of compartment
+Kp = 10 #   Partitioning coefficient
+cS = 5E-4 # Concentration of monomer
+S = (R+1)*cS/(Kp+R) #C  oncentration outside
+P = 0 # Concentration of aggregates t0
+M = 0 # Concentration of monomers in aggregates t0
+
+S_in = Kp*S #   Concentration of monomers inside
+P_in = 0 #  Concentration of aggregates inside t0
+M_in = 0 #  Concentration of monomers in aggregates t0
+S_in_seq = 0 #  Concentration of sequestered monomers inside
 
 S0 = [S,P,M,S_in,P_in,M_in]
 
@@ -50,7 +58,7 @@ n2 = 2
 state_index = [0,1,2,3,4,5,6]
 state_label = ["S","P","M", "S_in","P_in","M_in", "M_tot"]
 
-#Gillespie model
+#   Gillespie model
 
 #    reactions and fluxvector
 #      S   P   M S_in P_in M_in
@@ -170,6 +178,8 @@ for i in range(simulations):
     plt.ylabel('molecules')
     plt.show()
     
+    
+    #   Printing of results and writing to file
     results=[]
     AggF = state_history[-1, state_index[5]]/(state_history[-1, state_index[2]]+state_history[-1, state_index[5]])
     print("M_in/(M_out+M_in): ", AggF)
