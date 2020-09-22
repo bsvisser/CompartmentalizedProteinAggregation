@@ -3,40 +3,24 @@ import numpy
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 
-
+#Function used for finding t50 values
 def find_nearest(array, value):
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()
     return array[idx]
 
+#Parameters
+R = 10 #Volume fraction of compartment
+Kp = 10 #Partitioning coefficient
+cS = 5E-4 #Concentration of monomer
+S = (R+1)*cS/(Kp+R) #Concentration outside
+P = 0 #Concentration of aggregates t0
+M = 0 #Concentration of monomers in aggregates t0
 
-def Prop(s, k):
-    
-    prop = [s[0]*(s[0]-1)/2*k[0],
-            2*s[0]*s[1]*k[1],
-            s[0]*(s[0]-1)*s[2]/2*k[2],
-            s[3]*(s[3]-1)/2*k[3]*R,
-            2*s[3]*s[4]*k[4]*R,
-            s[3]*(s[3]-1)*s[5]/2*k[5]*R**2,
-            s[0]*k[6],
-            s[3]*k[7]*R
-           ]
-    return prop
-
-
-simulations = 1000
-
-R = 10
-Kp = 10
-cS = 5E-4
-S = (R+1)*cS/(Kp+R)
-P = 0
-M = 0
-
-S_in = Kp*S
-P_in = 0
-M_in = 0
-S_in_seq = 0
+S_in = Kp*S #Concentration of monomers inside
+P_in = 0 #Concentration of aggregates inside t0
+M_in = 0 #Concentration of monomers in aggregates t0
+S_in_seq = 0 #Concentration of sequestered monomers inside
 
 S0 = [S,P,M,S_in,P_in,M_in,S_in_seq]
 
